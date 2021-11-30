@@ -189,6 +189,12 @@ def get_checkpoint(helper):
         helper.log_warning(f'Loading checkpoint. Unable to load checkpoint. reason="{e.message}"') 
         return None
 
+    helper.log_debug(f'checkpoint: type={type(state_payload)} value={repr(state_payload)}')
+    # if nothing found, return empty
+    if state_payload == None:
+        helper.log_debug(f'checkpoint payload is empty. nothing to get.')
+        return None
+
     # handle old checkpoint and just flush out other fields
     if check_digit(state_payload) or check_float(state_payload):
         helper.log_warning(f'Old checkpoint found. Pushing to new model with time start, end, and current values.')
@@ -196,7 +202,6 @@ def get_checkpoint(helper):
 
     # validate if checkpoint payload of time values are formatted in float value for epoch
     try:
-        helper.log_debug(f'checkpoint: type={type(state_payload)} value={repr(state_payload)}')
         if not (state_payload.get(STR_TCURR) and prepare_time_value(helper, state_payload.get(STR_TCURR), STR_TCURR)):
             raise Exception(f'valid time_curr field not found in checkpoint payload')
         if not (state_payload[STR_TSTART] and prepare_time_value(helper, state_payload[STR_TSTART], STR_TSTART)):
@@ -410,7 +415,9 @@ def collect_events(helper, ew):
         time_start = time_default
 
     elif not time_start and payload_checkpoint:
-        time_start = get_time_dt(helper, payload_checkpoint)
+        # increment to collect after last checkpoint timestamp
+        # WARNING: may lose events if happened at the same per second as the last collected event but wasn't collected in a previous pull
+        time_start = get_time_dt(helper, payload_checkpoint.get(STR_TCURR)) +1
         helper.log_debug(f'time_start check: not time_start and payload_checkpoint')
 
     elif time_start and not payload_checkpoint:
@@ -418,9 +425,9 @@ def collect_events(helper, ew):
         # use specified time input
         pass
 
-    elif (time_start and payload_checkpoint) and (payload_checkpoint - time_start) > 0:
+    elif (time_start and payload_checkpoint) and (payload_checkpoint.get(STR_TCURR) - time_start) > 0:
         helper.log_debug(f'time_start check: (time_start and payload_checkpoint) and (payload_checkpoint - time_start) > 0')
-        time_start = get_time_dt(helper, payload_checkpoint.get(STR_TSTART))
+        time_start = get_time_dt(helper, payload_checkpoint.get(STR_TCURR))
 
     else:
         time_start = time_default
