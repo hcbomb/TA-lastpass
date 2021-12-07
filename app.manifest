@@ -15,7 +15,7 @@
       }
     ],
     "releaseDate": null,
-    "description": "",
+    "description": "Collect LastPass Enterprise event report data",
     "classification": {
       "intendedAudience": null,
       "categories": [],
@@ -34,20 +34,22 @@
     },
     "releaseNotes": {
       "name": null,
-      "text": null,
+      "text": "./README.md",
       "uri": null
     }
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "tasks": [],
-  "inputGroups": {
-  },
-  "incompatibleApps": {
-  },
+  "inputGroups": {},
+  "incompatibleApps": {},
   "platformRequirements": {
     "splunk": {
       "Enterprise": "*"
     }
-  }
+  },
+  "supportedDeployments": [
+    "_standalone",
+    "_distributed"
+  ],
+  "targetWorkloads": null
 }
