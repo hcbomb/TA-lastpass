@@ -44,6 +44,13 @@ fields = [
         )
     ), 
     field.RestField(
+        'time_zone',
+        required=True,
+        encrypted=False,
+        default='GMT',
+        validator=None
+    ), 
+    field.RestField(
         'time_start',
         required=False,
         encrypted=False,

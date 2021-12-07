@@ -50,8 +50,12 @@ class ModInputlastpass_event_reporting(modinput_wrapper.base_modinput.BaseModInp
                                          description="LastPass reporting REST API endpoint URL",
                                          required_on_create=False,
                                          required_on_edit=False))
+        scheme.add_argument(smi.Argument("time_zone", title="time_zone",
+                                         description="Supported timezones for customer id (library: pytz)",
+                                         required_on_create=True,
+                                         required_on_edit=False))
         scheme.add_argument(smi.Argument("time_start", title="Collection Start Time",
-                                         description="Supports two formats: epoch and YYYY-mm-dd HH:MM:SS. Supported timezone: PST. If there exists a time checkpoint, this value may be ignored.",
+                                         description="Supports two formats: epoch and YYYY-mm-dd HH:MM:SS. Specify time zone in the previous input. If there exists a time checkpoint, this value may be ignored.",
                                          required_on_create=False,
                                          required_on_edit=False))
         return scheme
